@@ -37,6 +37,10 @@ npm install -g create-unstack
 create-unstack my-app
 ```
 
+## Why?
+
+Create Unstack was made because it took me more time than I wanted to setup a new NextJS project with everything I wanted. I always had to delete a lot of things I didn't want, and I always had to add a lot of things I did want. So I decided to make a CLI that would do it for me. The stack used is what I personally use for my projects. I hope you like it!
+
 ## Usage
 
 ### Basic Usage
