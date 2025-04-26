@@ -11,14 +11,15 @@ Create Unstack is a streamlined CLI tool that helps you bootstrap complete Next.
 
 ## Features
 
-- 🌐 **Next.js 15+** - The latest version of the React framework
-- 🎨 **TailwindCSS** - Utility-first CSS framework with pre-configured design tokens
-- 🧰 **HeroUI** - Modern component library for building beautiful UIs
-- 🔒 **Authentication** - Optional Better-Auth integration for secure user management
-- 🗄️ **MongoDB** - Optional MongoDB integration for data storage
-- ⚡ **Million.js** - Optional React performance optimization
-- 🔍 **ESLint & Prettier** - Pre-configured with sensible defaults
-- 📦 **TypeScript** - Type-safe JavaScript with strict configuration
+- 🌐 **[Next.js 15+](https://nextjs.org/)** - The latest version of the React framework
+- 🎨 **[TailwindCSS](https://tailwindcss.com/)** - Utility-first CSS framework with pre-configured design tokens
+- 🧰 **[HeroUI](https://heroui.org/)** - Modern component library for building beautiful UIs
+- 🖌️ **[ShadCN](https://ui.shadcn.com/)** - Pre-configured component library for TailwindCSS
+- 🔒 **[Authentication](https://better-auth.com/)** - Optional Better-Auth integration for secure user management
+- 🗄️ **[MongoDB](https://www.mongodb.com/)** - Optional MongoDB integration for data storage
+- ⚡ **[Million.js](https://million.dev/)** - Optional React performance optimization
+- 🔍 **[ESLint & Prettier](https://eslint.org/)** - Pre-configured with sensible defaults
+- 📦 **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript with strict configuration
 - 🚀 **Fast Start** - Get up and running in seconds, not hours
 
 ## Installation
@@ -97,7 +98,7 @@ The scaffolded application includes:
 
 - **Next.js 15+** with App Router and React Server Components
 - **TailwindCSS 3.4+** with design token variables
-- **HeroUI** components (Button, Toast, System, Theme)
+- **HeroUI** *and* **ShadCN** setup out of the box for beautiful UI components
 - **TypeScript** with strict configuration
 - **ESLint & Prettier** with comprehensive rule sets
 - **next-themes** for dark/light mode
