@@ -1,0 +1,45 @@
+{
+  "name": "create-unstack",
+  "version": "1.0.2",
+  "description": "CLI tool to scaffold a modern Next.js app with TailwindCSS, HeroUI, and optional authentication & MongoDB",
+  "main": "dist/index.js",
+  "bin": {
+    "create-unstack": "./dist/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "next.js",
+    "cli",
+    "scaffold",
+    "tailwindcss",
+    "heroui",
+    "starter",
+    "typescript",
+    "mongodb",
+    "authentication"
+  ],
+  "author": "The Untraceable",
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "boxen": "^7.1.1",
+    "picocolors": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheUntraceable/create-untraceable-stack"
+  }
+}
