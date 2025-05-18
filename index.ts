@@ -105,7 +105,6 @@ async function main() {
             path.join(projectDir, "package.json"),
             JSON.stringify(generatePackageJson(projectName, features), null, 2),
         );
-        // Removed npx million@latest command
         // Create next.config.js
         await writeFile(
             path.join(projectDir, "next.config.js"),
