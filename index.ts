@@ -644,7 +644,7 @@ export default function Home() {
           A modern Next.js application with TailwindCSS, ShadCN UI, and more.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Button variant="shadow" color="primary>
+          <Button variant="shadow" color="primary">
             <a href="https://heroui.org/docs" target="_blank" rel="noopener noreferrer">
               Next.js Docs
             </a>
