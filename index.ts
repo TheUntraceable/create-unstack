@@ -13,7 +13,7 @@ const { values } = parseArgs({
     options: {
         db: { type: "boolean" },
         auth: { type: "boolean" },
-        million: { type: "boolean" },
+        reactScan: { type: "boolean" }, // Replaced million with reactScan
         yes: { type: "boolean" },
     },
 });
@@ -53,7 +53,7 @@ async function main() {
     let features = {
         db: values.db ?? false,
         auth: values.auth ?? false,
-        million: values.million ?? false,
+        reactScan: values.reactScan ?? false, // Replaced million with reactScan
     };
 
     if (!values.yes) {
@@ -62,14 +62,14 @@ async function main() {
             options: [
                 { value: "db", label: "MongoDB" },
                 { value: "auth", label: "Better-Auth (Authentication)" },
-                { value: "million", label: "Million.js (Performance)" },
+                { value: "reactScan", label: "React Scan (Performance)" }, // Replaced million with reactScan
             ],
         })) as string[];
 
         features = {
             db: selectedFeatures.includes("db"),
             auth: selectedFeatures.includes("auth"),
-            million: selectedFeatures.includes("million"),
+            reactScan: selectedFeatures.includes("reactScan"), // Replaced million with reactScan
         };
     }
 
@@ -105,14 +105,11 @@ async function main() {
             path.join(projectDir, "package.json"),
             JSON.stringify(generatePackageJson(projectName, features), null, 2),
         );
-        if (features.million) {
-            execSync("npx million@latest", { cwd: projectDir });
-
-        }
+        // Removed npx million@latest command
         // Create next.config.js
         await writeFile(
             path.join(projectDir, "next.config.js"),
-            generateNextConfig(features),
+            generateNextConfig(), // Removed features argument
         );
 
         // Create tsconfig.json
@@ -173,6 +170,11 @@ async function main() {
         // Create components directory
         await mkdir(path.join(projectDir, "components"), { recursive: true });
         await mkdir(path.join(projectDir, "components", "ui"), { recursive: true });
+        // Create ReactScan.tsx
+        await writeFile(
+            path.join(projectDir, "components", "ReactScan.tsx"),
+            generateReactScanComponent(),
+        );
 
         // Create lib directory
         await mkdir(path.join(projectDir, "lib"), { recursive: true });
@@ -315,7 +317,7 @@ async function main() {
 // Helper functions to generate files
 function generatePackageJson(
     projectName: string,
-    features: { db: boolean; auth: boolean; million: boolean },
+    features: { db: boolean; auth: boolean; reactScan: boolean }, // Replaced million with reactScan
 ) {
     const dependencies: Record<string, string> = {
         next: "^15.3.0",
@@ -344,8 +346,8 @@ function generatePackageJson(
         dependencies["better-auth"] = "^1.2.7";
     }
 
-    if (features.million) {
-        dependencies["@million/lint"] = "^1.0.14";
+    if (features.reactScan) { // Replaced million with reactScan
+        dependencies["react-scan"] = "^0.0.0"; // Added react-scan, replace ^0.0.0 with actual version if known
     }
 
     const devDependencies: Record<string, string> = {
@@ -365,7 +367,7 @@ function generatePackageJson(
         type: "module",
         private: true,
         scripts: {
-            dev: "next dev",
+            dev: "next dev --turbopack",
             build: "next build",
             start: "next start",
             lint: "next lint",
@@ -376,18 +378,7 @@ function generatePackageJson(
     };
 }
 
-function generateNextConfig(features: { million: boolean }) {
-    if (features.million) {
-        return `const MillionLint = require("@million/lint");
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-module.exports = MillionLint.next({
-    rsc: true,
-})(nextConfig);
-`;
-    }
-
+function generateNextConfig() { // Removed features argument
     return `/** @type {import('next').NextConfig} */
 const nextConfig = {};
 
@@ -473,7 +464,7 @@ next-env.d.ts
 
 function generateReadme(
     projectName: string,
-    features: { db: boolean; auth: boolean; million: boolean },
+    features: { db: boolean; auth: boolean; reactScan: boolean }, // Replaced million with reactScan
 ) {
     let featuresSection = `
 ## Features
@@ -492,8 +483,8 @@ function generateReadme(
         featuresSection += `- 🔐 **Better-Auth** - Best Authentication system\n`;
     }
 
-    if (features.million) {
-        featuresSection += `- ⚡ **Million.js** - Performance optimization for React\n`;
+    if (features.reactScan) { // Replaced million with reactScan
+        featuresSection += `- ⚡ **React Scan** - Performance analysis for React\n`; // Updated feature description
     }
 
     return `# ${projectName}
@@ -533,14 +524,16 @@ To learn more about the technologies used in this project:
 - [Next.js Documentation](https://nextjs.org/docs)
 - [TailwindCSS Documentation](https://tailwindcss.com/docs)
 - [ShadCN UI Documentation](https://ui.shadcn.com)
-${features.db ? "- [MongoDB Documentation](https://mongodb.com/docs)\n" : ""}
-${features.auth ? "- [Better-Auth Documentation](https://better-auth.dev)\n" : ""}
-${features.million ? "- [Million.js Documentation](https://million.dev)\n" : ""}
+${features.db ? "- [MongoDB Documentation](https://mongodb.com/docs)\\n" : ""}
+${features.auth ? "- [Better-Auth Documentation](https://better-auth.dev)\\n" : ""}
+${features.reactScan ? "- [React Scan Documentation](https://github.com/aidenybai/react-scan)\\n" : ""} // Updated link and text
 `;
 }
 
 function generateLayout() {
     return `import "@/styles/globals.css";
+// This component must be the top-most import in this file!
+import { ReactScan } from "@/components/ReactScan";
 import clsx from "clsx";
 import { Metadata, Viewport } from "next";
 
@@ -574,6 +567,7 @@ export default function RootLayout({
 }) {
     return (
         <html suppressHydrationWarning lang="en">
+            <ReactScan />
             <head />
             <body
                 className={clsx(
@@ -616,6 +610,25 @@ export const siteConfig = {
     description:
         "Get up and running fast with Untraceable Stack.",
 };`
+}
+
+// New function to generate ReactScan.tsx content
+function generateReactScanComponent() {
+    return `"use client";
+// react-scan must be imported before react
+import { scan } from "react-scan";
+import { JSX, useEffect } from "react";
+
+export function ReactScan(): JSX.Element {
+  useEffect(() => {
+    scan({
+      enabled: true,
+    });
+  }, []);
+
+  return <></>;
+}
+`;
 }
 
 function generateHomePage() {
