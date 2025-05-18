@@ -346,7 +346,7 @@ function generatePackageJson(
     }
 
     if (features.reactScan) { // Replaced million with reactScan
-        dependencies["react-scan"] = "^0.0.0"; // Added react-scan, replace ^0.0.0 with actual version if known
+        dependencies["react-scan"] = "^0.3.4";
     }
 
     const devDependencies: Record<string, string> = {
