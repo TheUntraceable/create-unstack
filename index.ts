@@ -755,7 +755,7 @@ function generateTailwindConfig() {
     return `import { heroui } from "@heroui/theme";
 
 /** @type {import('tailwindcss').Config} */
-const config = {
+export default {
     content: [
         "./components/**/*.{js,ts,jsx,tsx,mdx}",
         "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -784,12 +784,11 @@ const config = {
     plugins: [heroui(), require("tailwindcss-animate")],
 };
 
-module.exports = config;
 `;
 }
 
 function generatePostcssConfig() {
-    return `module.exports = {
+    return `export default {
   plugins: {
     tailwindcss: {},
     autoprefixer: {},
