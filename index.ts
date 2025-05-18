@@ -345,7 +345,7 @@ function generatePackageJson(
         dependencies["better-auth"] = "^1.2.7";
     }
 
-    if (features.reactScan) { // Replaced million with reactScan
+    if (features.reactScan) {
         dependencies["react-scan"] = "^0.3.4";
     }
 
@@ -377,7 +377,7 @@ function generatePackageJson(
     };
 }
 
-function generateNextConfig() { // Removed features argument
+function generateNextConfig() {
     return `/** @type {import('next').NextConfig} */
 const nextConfig = {};
 
@@ -463,7 +463,7 @@ next-env.d.ts
 
 function generateReadme(
     projectName: string,
-    features: { db: boolean; auth: boolean; reactScan: boolean }, // Replaced million with reactScan
+    features: { db: boolean; auth: boolean; reactScan: boolean },
 ) {
     let featuresSection = `
 ## Features
@@ -482,8 +482,8 @@ function generateReadme(
         featuresSection += `- 🔐 **Better-Auth** - Best Authentication system\n`;
     }
 
-    if (features.reactScan) { // Replaced million with reactScan
-        featuresSection += `- ⚡ **React Scan** - Performance analysis for React\n`; // Updated feature description
+    if (features.reactScan) {
+        featuresSection += `- ⚡ **React Scan** - Performance analysis for React\n`;
     }
 
     return `# ${projectName}
@@ -755,7 +755,7 @@ function generateTailwindConfig() {
     return `import { heroui } from "@heroui/theme";
 
 /** @type {import('tailwindcss').Config} */
-export default {
+const config = {
     content: [
         "./components/**/*.{js,ts,jsx,tsx,mdx}",
         "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -784,6 +784,7 @@ export default {
     plugins: [heroui(), require("tailwindcss-animate")],
 };
 
+export default config;
 `;
 }
 
