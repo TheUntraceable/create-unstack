@@ -58,19 +58,28 @@ async function main() {
 
     if (!values.yes) {
         const selectedFeatures = (await multiselect({
-            message: "Select optional features:",
+            message: "Select optional features (press Enter to skip all):",
             options: [
                 { value: "db", label: "MongoDB" },
                 { value: "auth", label: "Better-Auth (Authentication)" },
                 { value: "reactScan", label: "React Scan (Performance)" }, // Replaced million with reactScan
             ],
-        })) as string[];
+            required: false, // Allow no selection
+        })) as string[] | undefined;
 
+        // Handle case where no features are selected or selectedFeatures is undefined
+        const featuresArray = selectedFeatures || [];
+        
         features = {
-            db: selectedFeatures.includes("db"),
-            auth: selectedFeatures.includes("auth"),
-            reactScan: selectedFeatures.includes("reactScan"), // Replaced million with reactScan
+            db: featuresArray.includes("db"),
+            auth: featuresArray.includes("auth"),
+            reactScan: featuresArray.includes("reactScan"), // Replaced million with reactScan
         };
+
+        // Show message if no features are selected
+        if (featuresArray.length === 0) {
+            note(color.cyan("No optional features selected. Creating a minimal Next.js app."));
+        }
     }
 
     // If auth is selected without db, enable db automatically
@@ -150,7 +159,7 @@ async function main() {
         await mkdir(path.join(projectDir, "app"), { recursive: true });
         await writeFile(
             path.join(projectDir, "app", "layout.tsx"),
-            generateLayout(),
+            generateLayout(features),
         );
         await writeFile(
             path.join(projectDir, "app", "page.tsx"),
@@ -169,11 +178,14 @@ async function main() {
         // Create components directory
         await mkdir(path.join(projectDir, "components"), { recursive: true });
         await mkdir(path.join(projectDir, "components", "ui"), { recursive: true });
-        // Create ReactScan.tsx
-        await writeFile(
-            path.join(projectDir, "components", "ReactScan.tsx"),
-            generateReactScanComponent(),
-        );
+        
+        // Create ReactScan.tsx only if reactScan feature is selected
+        if (features.reactScan) {
+            await writeFile(
+                path.join(projectDir, "components", "ReactScan.tsx"),
+                generateReactScanComponent(),
+            );
+        }
 
         // Create lib directory
         await mkdir(path.join(projectDir, "lib"), { recursive: true });
@@ -529,10 +541,16 @@ ${features.reactScan ? "- [React Scan Documentation](https://github.com/aidenyba
 `;
 }
 
-function generateLayout() {
+function generateLayout(features: { db: boolean; auth: boolean; reactScan: boolean }) {
+    const reactScanImport = features.reactScan 
+        ? `// This component must be the top-most import in this file!
+import { ReactScan } from "@/components/ReactScan";` 
+        : '';
+    
+    const reactScanComponent = features.reactScan ? '<ReactScan />' : '';
+    
     return `import "@/styles/globals.css";
-// This component must be the top-most import in this file!
-import { ReactScan } from "@/components/ReactScan";
+${reactScanImport}
 import clsx from "clsx";
 import { Metadata, Viewport } from "next";
 
@@ -566,7 +584,7 @@ export default function RootLayout({
 }) {
     return (
         <html suppressHydrationWarning lang="en">
-            <ReactScan />
+            ${reactScanComponent}
             <head />
             <body
                 className={clsx(
