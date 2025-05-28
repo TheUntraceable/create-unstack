@@ -69,7 +69,7 @@ async function main() {
 
         // Handle case where no features are selected or selectedFeatures is undefined
         const featuresArray = selectedFeatures || [];
-        
+
         features = {
             db: featuresArray.includes("db"),
             auth: featuresArray.includes("auth"),
@@ -78,7 +78,11 @@ async function main() {
 
         // Show message if no features are selected
         if (featuresArray.length === 0) {
-            note(color.cyan("No optional features selected. Creating a minimal Next.js app."));
+            note(
+                color.cyan(
+                    "No optional features selected. Creating a minimal Next.js app.",
+                ),
+            );
         }
     }
 
@@ -138,7 +142,10 @@ async function main() {
         );
 
         // Create .gitignore
-        await writeFile(path.join(projectDir, ".gitignore"), generateGitignore());
+        await writeFile(
+            path.join(projectDir, ".gitignore"),
+            generateGitignore(),
+        );
 
         // Create README.md
         await writeFile(
@@ -150,7 +157,7 @@ async function main() {
         await writeFile(
             path.join(projectDir, "config", "site.ts"),
             generateSite(),
-        )
+        );
         await writeFile(
             path.join(projectDir, "config", "fonts.ts"),
             generateFonts(),
@@ -166,10 +173,7 @@ async function main() {
             generateHomePage(),
         );
         // Create styles folder
-        await mkdir(
-            path.join(projectDir, "styles"),
-            { recursive: true },
-        )
+        await mkdir(path.join(projectDir, "styles"), { recursive: true });
         await writeFile(
             path.join(projectDir, "styles", "globals.css"),
             generateGlobalCss(),
@@ -177,8 +181,10 @@ async function main() {
 
         // Create components directory
         await mkdir(path.join(projectDir, "components"), { recursive: true });
-        await mkdir(path.join(projectDir, "components", "ui"), { recursive: true });
-        
+        await mkdir(path.join(projectDir, "components", "ui"), {
+            recursive: true,
+        });
+
         // Create ReactScan.tsx only if reactScan feature is selected
         if (features.reactScan) {
             await writeFile(
@@ -189,7 +195,10 @@ async function main() {
 
         // Create lib directory
         await mkdir(path.join(projectDir, "lib"), { recursive: true });
-        await writeFile(path.join(projectDir, "lib", "utils.ts"), generateUtils());
+        await writeFile(
+            path.join(projectDir, "lib", "utils.ts"),
+            generateUtils(),
+        );
 
         // Create tailwind.config.js
         await writeFile(
@@ -251,29 +260,16 @@ async function main() {
                 path.join(projectDir, "lib", "auth-client.ts"),
                 generateAuthClient(),
             );
+            await mkdir(path.join(projectDir, "app", "api"), {
+                recursive: true,
+            });
+            await mkdir(path.join(projectDir, "app", "api", "auth"), {
+                recursive: true,
+            });
             await mkdir(
-                path.join(projectDir, "app", "api"),
+                path.join(projectDir, "app", "api", "auth", "[...all]"),
                 { recursive: true },
-            )
-            await mkdir(
-                path.join(
-                    projectDir,
-                    "app",
-                    "api",
-                    "auth",
-                ),
-                { recursive: true },
-            )
-            await mkdir(
-                path.join(
-                    projectDir,
-                    "app",
-                    "api",
-                    "auth",
-                    "[...all]"
-                ),
-                { recursive: true },
-            )
+            );
             await writeFile(
                 path.join(
                     projectDir,
@@ -281,10 +277,10 @@ async function main() {
                     "api",
                     "auth",
                     "[...all]",
-                    "route.ts"
+                    "route.ts",
                 ),
                 generateAuthRoute(),
-            )
+            );
         }
 
         s.stop("Project files created successfully");
@@ -298,9 +294,12 @@ async function main() {
     try {
         execSync("git init", { cwd: projectDir });
         execSync("git add .", { cwd: projectDir });
-        execSync('git commit -m "Initial commit from create-untraceable-stack"', {
-            cwd: projectDir,
-        });
+        execSync(
+            'git commit -m "Initial commit from create-untraceable-stack"',
+            {
+                cwd: projectDir,
+            },
+        );
         s.stop("Git repository initialized");
     } catch (error) {
         s.stop("Failed to initialize git repository");
@@ -310,11 +309,11 @@ async function main() {
     outro(
         boxen(
             `${color.green("✅ Success!")} Your project ${color.cyan(projectName)} has been created.\n\n` +
-            `To get started:\n\n` +
-            `  ${color.yellow("cd")} ${projectName}\n` +
-            `  ${color.yellow("bun install")} ${color.dim("# or npm install / yarn")}\n` +
-            `  ${color.yellow("bun dev")} ${color.dim("# or npm run dev / yarn dev")}\n\n` +
-            `${color.dim("Happy coding! 🚀")}`,
+                `To get started:\n\n` +
+                `  ${color.yellow("cd")} ${projectName}\n` +
+                `  ${color.yellow("bun install")} ${color.dim("# or npm install / yarn")}\n` +
+                `  ${color.yellow("bun dev")} ${color.dim("# or npm run dev / yarn dev")}\n\n` +
+                `${color.dim("Happy coding! 🚀")}`,
             {
                 padding: 1,
                 margin: 1,
@@ -332,7 +331,7 @@ function generatePackageJson(
 ) {
     const dependencies: Record<string, string> = {
         next: "^15.3.0",
-        "react": "18.3.1",
+        react: "18.3.1",
         "tailwindcss-animate": "^1.0.7",
         "react-dom": "18.3.1",
         "@heroui/system": "2.4.13",
@@ -340,11 +339,11 @@ function generatePackageJson(
         "@heroui/toast": "^2.0.7",
         "@heroui/button": "2.2.17",
         "next-themes": "^0.4.6",
-        "tailwindcss": "3.4.16",
+        tailwindcss: "3.4.16",
         postcss: "^8.4.31",
         autoprefixer: "^10.4.16",
         "class-variance-authority": "^0.7.1",
-        "clsx": "^2.1.1",
+        clsx: "^2.1.1",
         "lucide-react": "^0.292.0",
         "tailwind-merge": "^2.0.0",
     };
@@ -423,7 +422,12 @@ function generateTsConfig() {
                 "@/*": ["./*"],
             },
         },
-        include: ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+        include: [
+            "next-env.d.ts",
+            "**/*.ts",
+            "**/*.tsx",
+            ".next/types/**/*.ts",
+        ],
         exclude: ["node_modules"],
     };
 }
@@ -541,14 +545,18 @@ ${features.reactScan ? "- [React Scan Documentation](https://github.com/aidenyba
 `;
 }
 
-function generateLayout(features: { db: boolean; auth: boolean; reactScan: boolean }) {
-    const reactScanImport = features.reactScan 
+function generateLayout(features: {
+    db: boolean;
+    auth: boolean;
+    reactScan: boolean;
+}) {
+    const reactScanImport = features.reactScan
         ? `// This component must be the top-most import in this file!
-import { ReactScan } from "@/components/ReactScan";` 
-        : '';
-    
-    const reactScanComponent = features.reactScan ? '<ReactScan />' : '';
-    
+import { ReactScan } from "@/components/ReactScan";`
+        : "";
+
+    const reactScanComponent = features.reactScan ? "<ReactScan />" : "";
+
     return `import "@/styles/globals.css";
 ${reactScanImport}
 import clsx from "clsx";
@@ -617,7 +625,7 @@ export const fontMono = FontMono({
     subsets: ["latin"],
     variable: "--font-mono",
 });
-`
+`;
 }
 function generateSite() {
     return `export type SiteConfig = typeof siteConfig;
@@ -626,7 +634,7 @@ export const siteConfig = {
     name: "Create Untraceable Stack",
     description:
         "Get up and running fast with Untraceable Stack.",
-};`
+};`;
 }
 
 // New function to generate ReactScan.tsx content
@@ -1018,7 +1026,8 @@ export default [
             // Add any other rules known to conflict with Prettier here
         },
     },
-];`}
+];`;
+}
 
 function generatePrettierConfig() {
     return {
@@ -1067,7 +1076,6 @@ if (process.env.NODE_ENV === "development") {
 export { client };`;
 }
 
-
 function generateAuthConfig() {
     return `import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
@@ -1089,26 +1097,26 @@ export const authClient = createAuthClient({
 
 function generateComponentsJson() {
     return {
-        "$schema": "https://ui.shadcn.com/schema.json",
-        "style": "new-york",
-        "rsc": true,
-        "tsx": true,
-        "tailwind": {
-            "config": "tailwind.config.js",
-            "css": "styles/globals.css",
-            "baseColor": "zinc",
-            "cssVariables": false,
-            "prefix": ""
+        $schema: "https://ui.shadcn.com/schema.json",
+        style: "new-york",
+        rsc: true,
+        tsx: true,
+        tailwind: {
+            config: "tailwind.config.js",
+            css: "styles/globals.css",
+            baseColor: "zinc",
+            cssVariables: false,
+            prefix: "",
         },
-        "aliases": {
-            "components": "@/components",
-            "utils": "@/lib/utils",
-            "ui": "@/components/ui",
-            "lib": "@/lib",
-            "hooks": "@/hooks"
+        aliases: {
+            components: "@/components",
+            utils: "@/lib/utils",
+            ui: "@/components/ui",
+            lib: "@/lib",
+            hooks: "@/hooks",
         },
-        "iconLibrary": "lucide"
-    }
+        iconLibrary: "lucide",
+    };
 }
 
 function generateProviders() {
@@ -1146,14 +1154,14 @@ export const Providers = ({ children, themeProps }: ProvidersProps) => {
             </NextThemesProvider>
         </HeroUIProvider>
     );
-};`
+};`;
 }
 
 function generateAuthRoute() {
     return `import { auth } from "@/lib/auth";
 import { toNextJsHandler } from "better-auth/next-js";
  
-export const { POST, GET } = toNextJsHandler(auth);`
+export const { POST, GET } = toNextJsHandler(auth);`;
 }
 
 main().catch(console.error);

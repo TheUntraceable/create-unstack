@@ -102,7 +102,7 @@ The scaffolded application includes:
 
 - **Next.js 15+** with App Router and React Server Components
 - **TailwindCSS 3.4+** with design token variables
-- **HeroUI** *and* **ShadCN** setup out of the box for beautiful UI components
+- **HeroUI** _and_ **ShadCN** setup out of the box for beautiful UI components
 - **TypeScript** with strict configuration
 - **ESLint & Prettier** with comprehensive rule sets
 - **next-themes** for dark/light mode
