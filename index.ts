@@ -369,6 +369,7 @@ function generatePackageJson(
         "eslint-config-next": "^14.0.0",
         prettier: "^3.0.3",
         "prettier-plugin-tailwindcss": "^0.5.7",
+        "eslint-plugin-prettier": "^5.4.1"
     };
 
     return {
