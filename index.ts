@@ -304,7 +304,7 @@ function generatePackageJson(
     features: { db: boolean; auth: boolean; reactScan: boolean }, // Replaced million with reactScan
 ) {
     const dependencies: Record<string, string> = {
-        next: "^15.3.0",
+        next: "^15.4.0",
         react: "18.3.1",
         "tailwindcss-animate": "^1.0.7",
         "react-dom": "18.3.1",
