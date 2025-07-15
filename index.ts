@@ -327,7 +327,7 @@ function generatePackageJson(
     }
 
     if (features.auth) {
-        dependencies["better-auth"] = "^1.2.7";
+        dependencies["better-auth"] = "^1.2.12";
     }
 
     if (features.reactScan) {
