@@ -793,25 +793,39 @@ function generatePostcssConfig() {
 
 function generateBiomeConfig() {
     return `{
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+  "extends": ["ultracite"],
   "linter": {
     "enabled": true,
+    "includes": [
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.js",
+      "**/*.jsx",
+      "**/*.json",
+      "**/*.md"
+    ],
     "rules": {
-      "recommended": true,
-      "suspicious": {
-        "noExplicitAny": "off"
+      "style": {
+        "noNonNullAssertion": "off"
       }
     }
   },
+  "files": {
+    "experimentalScannerIgnores": ["node_modules", ".git", ".next"]
+  },
   "formatter": {
     "enabled": true,
-    "indentStyle": "tab",
-    "indentWidth": 4
+    "indentWidth": 4,
+    "indentStyle": "space"
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
   }
-}`;
+}
+`
 }
 
 function generateVsCodeSettings() {
