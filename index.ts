@@ -142,10 +142,7 @@ async function main() {
         );
 
         // Create .gitignore
-        await writeFile(
-            path.join(projectDir, ".gitignore"),
-            generateGitignore(),
-        );
+        await writeFile(path.join(projectDir, ".gitignore"), generateGitignore());
 
         // Create README.md
         await writeFile(
@@ -154,10 +151,7 @@ async function main() {
         );
 
         await mkdir(path.join(projectDir, "config"), { recursive: true });
-        await writeFile(
-            path.join(projectDir, "config", "site.ts"),
-            generateSite(),
-        );
+        await writeFile(path.join(projectDir, "config", "site.ts"), generateSite());
         await writeFile(
             path.join(projectDir, "config", "fonts.ts"),
             generateFonts(),
@@ -195,10 +189,7 @@ async function main() {
 
         // Create lib directory
         await mkdir(path.join(projectDir, "lib"), { recursive: true });
-        await writeFile(
-            path.join(projectDir, "lib", "utils.ts"),
-            generateUtils(),
-        );
+        await writeFile(path.join(projectDir, "lib", "utils.ts"), generateUtils());
 
         // Create tailwind.config.js
         await writeFile(
@@ -222,16 +213,10 @@ async function main() {
             generatePostcssConfig(),
         );
 
-        // Create eslint.config.mjs
+        // Create biome.json
         await writeFile(
-            path.join(projectDir, "eslint.config.mjs"),
-            generateEslintConfig(),
-        );
-
-        // Create .prettierrc
-        await writeFile(
-            path.join(projectDir, ".prettierrc"),
-            JSON.stringify(generatePrettierConfig(), null, 2),
+            path.join(projectDir, "biome.json"),
+            generateBiomeConfig(),
         );
 
         // Create .vscode directory and settings
@@ -266,19 +251,11 @@ async function main() {
             await mkdir(path.join(projectDir, "app", "api", "auth"), {
                 recursive: true,
             });
-            await mkdir(
-                path.join(projectDir, "app", "api", "auth", "[...all]"),
-                { recursive: true },
-            );
+            await mkdir(path.join(projectDir, "app", "api", "auth", "[...all]"), {
+                recursive: true,
+            });
             await writeFile(
-                path.join(
-                    projectDir,
-                    "app",
-                    "api",
-                    "auth",
-                    "[...all]",
-                    "route.ts",
-                ),
+                path.join(projectDir, "app", "api", "auth", "[...all]", "route.ts"),
                 generateAuthRoute(),
             );
         }
@@ -294,12 +271,9 @@ async function main() {
     try {
         execSync("git init", { cwd: projectDir });
         execSync("git add .", { cwd: projectDir });
-        execSync(
-            'git commit -m "Initial commit from create-untraceable-stack"',
-            {
-                cwd: projectDir,
-            },
-        );
+        execSync('git commit -m "Initial commit from create-untraceable-stack"', {
+            cwd: projectDir,
+        });
         s.stop("Git repository initialized");
     } catch (error) {
         s.stop("Failed to initialize git repository");
@@ -309,11 +283,11 @@ async function main() {
     outro(
         boxen(
             `${color.green("✅ Success!")} Your project ${color.cyan(projectName)} has been created.\n\n` +
-                `To get started:\n\n` +
-                `  ${color.yellow("cd")} ${projectName}\n` +
-                `  ${color.yellow("bun install")} ${color.dim("# or npm install / yarn")}\n` +
-                `  ${color.yellow("bun dev")} ${color.dim("# or npm run dev / yarn dev")}\n\n` +
-                `${color.dim("Happy coding! 🚀")}`,
+            `To get started:\n\n` +
+            `  ${color.yellow("cd")} ${projectName}\n` +
+            `  ${color.yellow("bun install")} ${color.dim("# or npm install / yarn")}\n` +
+            `  ${color.yellow("bun dev")} ${color.dim("# or npm run dev / yarn dev")}\n\n` +
+            `${color.dim("Happy coding! 🚀")}`,
             {
                 padding: 1,
                 margin: 1,
@@ -365,11 +339,7 @@ function generatePackageJson(
         "@types/react-dom": "^18.2.15",
         "@types/node": "^20.9.0",
         typescript: "^5.2.2",
-        eslint: "^8.53.0",
-        "eslint-config-next": "^14.0.0",
-        prettier: "^3.0.3",
-        "prettier-plugin-tailwindcss": "^0.5.7",
-        "eslint-plugin-prettier": "^5.4.1"
+        "@biomejs/biome": "^1.8.3",
     };
 
     return {
@@ -381,8 +351,8 @@ function generatePackageJson(
             dev: "next dev --turbopack",
             build: "next build",
             start: "next start",
-            lint: "next lint",
-            format: "prettier --write .",
+            lint: "biome lint .",
+            format: "biome format --write .",
         },
         dependencies,
         devDependencies,
@@ -423,12 +393,7 @@ function generateTsConfig() {
                 "@/*": ["./*"],
             },
         },
-        include: [
-            "next-env.d.ts",
-            "**/*.ts",
-            "**/*.tsx",
-            ".next/types/**/*.ts",
-        ],
+        include: ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
         exclude: ["node_modules"],
     };
 }
@@ -487,7 +452,7 @@ function generateReadme(
 
 - 🎨 **TailwindCSS** - Utility-first CSS framework
 - 🧩 **ShadCN UI** - Accessible and customizable component library
-- 🔍 **ESLint & Prettier** - Code linting and formatting
+- 🔍 **Biome** - Code linting and formatting
 - 🔄 **Git** - Version control with initial commit
 `;
 
@@ -824,225 +789,56 @@ function generatePostcssConfig() {
 }`;
 }
 
-function generateEslintConfig() {
-    return `import js from "@eslint/js";
-import globals from "globals";
-import typescriptPlugin from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
-import reactPlugin from "eslint-plugin-react";
-import reactHooksPlugin from "eslint-plugin-react-hooks";
-import jsxA11yPlugin from "eslint-plugin-jsx-a11y";
-import prettierPlugin from "eslint-plugin-prettier";
-import nextPlugin from "@next/eslint-plugin-next";
-import importPlugin from "eslint-plugin-import";
-// If using eslint-plugin-import with TypeScript, you might need this resolver
-// Make sure to install it: npm install -D eslint-import-resolver-typescript
-// import typescriptResolver from 'eslint-import-resolver-typescript';
 
-export default [
-    // Ignore patterns
-    {
-        ignores: [
-            ".now/*",
-            "**/*.css",
-            "**/.changeset",
-            "**/dist",
-            "esm/*",
-            "public/*",
-            "tests/*",
-            "scripts/*",
-            "**/*.config.js",
-            "**/.DS_Store",
-            "**/node_modules",
-            "**/coverage",
-            "**/.next",
-            "**/build",
-            "!**/.commitlintrc.cjs",
-            "!**/.lintstagedrc.cjs",
-            "!**/jest.config.js",
-            "!**/plopfile.js",
-            "!**/react-shim.js",
-            "!**/tsup.config.ts",
-        ],
-    },
 
-    // Base JS configuration
-    {
-        ...js.configs.recommended,
-        files: ["**/*.js", "**/*.cjs", "**/*.mjs"],
-        languageOptions: {
-            ecmaVersion: 2023,
-            sourceType: "module", // Use 'commonjs' for .cjs files if needed, or configure per file type
-            globals: {
-                ...globals.node, // Base Node.js globals
-            },
-        },
-        rules: {
-            // Customize base JS rules here if needed
-            "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }], // Warn about unused vars, ignore if starts with _
-            "no-console": "warn", // Warn about console.log
-            eqeqeq: ["error", "always"], // Enforce ===
-            "no-undef": "error", // Disallow undeclared variables
-        },
-    },
-
-    // TypeScript configuration
-    {
-        files: ["**/*.ts", "**/*.tsx"],
-        plugins: {
-            "@typescript-eslint": typescriptPlugin,
-            import: importPlugin, // Add import plugin for TS files too
-        },
-        languageOptions: {
-            parser: tsParser,
-            parserOptions: {
-                ecmaVersion: 2023,
-                sourceType: "module",
-                ecmaFeatures: {
-                    jsx: true,
-                },
-                project: "./tsconfig.json",
-                tsconfigRootDir: ".",
-            },
-            globals: {
-                ...globals.browser,
-                ...globals.node,
-            },
-        },
-        settings: {
-            // Configure 'eslint-plugin-import' resolver for TypeScript
-            "import/resolver": {
-                typescript: {}, // Uses tsconfig.json
-                node: true,
-            },
-            "import/parsers": {
-                "@typescript-eslint/parser": [".ts", ".tsx"],
-            },
-        },
-        rules: {
-            ...typescriptPlugin.configs.recommended.rules,
-            ...importPlugin.configs.typescript.rules, // Add import rules for TS
-
-            // Keep essential TS rules or adjust as needed
-            "@typescript-eslint/explicit-function-return-type": "off",
-            "@typescript-eslint/explicit-module-boundary-types": "off",
-            "@typescript-eslint/no-explicit-any": "warn",
-            "@typescript-eslint/no-unused-vars": [
-                "warn",
-                { argsIgnorePattern: "^_" },
-            ],
-            "@typescript-eslint/no-floating-promises": "error", // Good practice for async code
-            "@typescript-eslint/no-misused-promises": "error", // Good practice for async code
-
-            // Import plugin rules adjustments (optional)
-            "import/order": [
-                "warn",
-                {
-                    groups: [
-                        "builtin",
-                        "external",
-                        "internal",
-                        "parent",
-                        "sibling",
-                        "index",
-                        "object",
-                        "type",
-                    ],
-                    "newlines-between": "always",
-                    alphabetize: { order: "asc", caseInsensitive: true },
-                },
-            ],
-            "import/no-unresolved": "error", // Ensure imports can be resolved
-            "import/no-duplicates": "warn", // Warn on duplicate imports
-        },
-    },
-
-    // React configuration
-    {
-        files: ["**/*.jsx", "**/*.tsx"],
-        plugins: {
-            react: reactPlugin,
-            "react-hooks": reactHooksPlugin,
-            "jsx-a11y": jsxA11yPlugin,
-        },
-        languageOptions: {
-            // Ensure JSX is enabled for JS files too if needed
-            parserOptions: {
-                ecmaFeatures: {
-                    jsx: true,
-                },
-            },
-            globals: {
-                ...globals.browser, // Add browser globals for React components
-            },
-        },
-        settings: {
-            react: {
-                version: "detect",
-            },
-        },
-        rules: {
-            ...reactPlugin.configs.recommended.rules,
-            ...reactHooksPlugin.configs.recommended.rules,
-            ...jsxA11yPlugin.configs.recommended.rules,
-            "react/prop-types": "off", // Often handled by TypeScript
-            "react/react-in-jsx-scope": "off", // Not needed with React 17+
-            "react-hooks/exhaustive-deps": "warn", // Keep this for hook correctness
-        },
-    },
-
-    // Next.js configuration
-    {
-        files: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"], // Apply to all relevant files
-        plugins: {
-            "@next/next": nextPlugin,
-        },
-        rules: {
-            ...nextPlugin.configs.recommended.rules,
-            ...nextPlugin.configs["core-web-vitals"].rules, // Include core web vitals
-            // Add specific Next.js rules if needed
-        },
-    },
-
-    // Prettier configuration (Must be last)
-    {
-        // Apply Prettier formatting rules to all relevant file types
-        files: [
-            "**/*.js",
-            "**/*.jsx",
-            "**/*.ts",
-            "**/*.tsx",
-            "**/*.cjs",
-            "**/*.mjs",
-        ],
-        plugins: {
-            prettier: prettierPlugin,
-        },
-        rules: {
-            "prettier/prettier": "warn", // Show Prettier issues as warnings
-            // Disable rules that conflict with Prettier if necessary
-            // (Often handled by eslint-config-prettier, but here we apply directly)
-            "arrow-body-style": "off",
-            "prefer-arrow-callback": "off",
-            // Add any other rules known to conflict with Prettier here
-        },
-    },
-];`;
-}
-
-function generatePrettierConfig() {
-    return {
-        tabWidth: 4,
-        plugins: ["prettier-plugin-tailwindcss"],
-    };
+function generateBiomeConfig() {
+    return `{
+  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noExplicitAny": "off"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "tab",
+    "indentWidth": 4
+  }
+}`;
 }
 
 function generateVsCodeSettings() {
     return {
+        "editor.defaultFormatter": "biomejs.biome",
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
         "editor.codeActionsOnSave": {
-            "source.fixAll.eslint": true,
+            "quickfix.biome": "explicit",
+            "source.organizeImports.biome": "explicit",
+        },
+        "[json]": {
+            "editor.defaultFormatter": "biomejs.biome",
+        },
+        "[jsonc]": {
+            "editor.defaultFormatter": "biomejs.biome",
+        },
+        "[javascript]": {
+            "editor.defaultFormatter": "biomejs.biome",
+        },
+        "[typescript]": {
+            "editor.defaultFormatter": "biomejs.biome",
+        },
+        "[javascriptreact]": {
+            "editor.defaultFormatter": "biomejs.biome",
+        },
+        "[typescriptreact]": {
+            "editor.defaultFormatter": "biomejs.biome",
         },
         "typescript.tsdk": "node_modules/typescript/lib",
         "typescript.enablePromptUseWorkspaceTsdk": true,
