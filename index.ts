@@ -335,7 +335,7 @@ function generatePackageJson(
     }
 
     const devDependencies: Record<string, string> = {
-        "@types/react": "^18.2.37",
+        "@types/react": "^18.3.1",
         "@types/react-dom": "^18.2.15",
         "@types/node": "^20.9.0",
         typescript: "^5.2.2",
