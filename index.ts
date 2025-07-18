@@ -8,7 +8,6 @@ import { parseArgs } from "node:util";
 import path from "path";
 import color from "picocolors";
 
-// Parse CLI arguments
 const { values } = parseArgs({
     options: {
         db: { type: "boolean" },
@@ -179,14 +178,6 @@ async function main() {
             recursive: true,
         });
 
-        // Create ReactScan.tsx only if reactScan feature is selected
-        if (features.reactScan) {
-            await writeFile(
-                path.join(projectDir, "components", "ReactScan.tsx"),
-                generateReactScanComponent(),
-            );
-        }
-
         // Create lib directory
         await mkdir(path.join(projectDir, "lib"), { recursive: true });
         await writeFile(path.join(projectDir, "lib", "utils.ts"), generateUtils());
@@ -308,38 +299,38 @@ function generatePackageJson(
         react: "18.3.1",
         "tailwindcss-animate": "^1.0.7",
         "react-dom": "18.3.1",
-        "@heroui/system": "2.4.13",
-        "@heroui/theme": "2.4.13",
-        "@heroui/toast": "^2.0.7",
-        "@heroui/button": "2.2.17",
+        "@heroui/system": "2.4.19",
+        "@heroui/theme": "2.4.19",
+        "@heroui/toast": "^2.0.13",
+        "@heroui/button": "2.2.23",
         "next-themes": "^0.4.6",
-        tailwindcss: "3.4.16",
-        postcss: "^8.4.31",
-        autoprefixer: "^10.4.16",
         "class-variance-authority": "^0.7.1",
         clsx: "^2.1.1",
         "lucide-react": "^0.292.0",
         "tailwind-merge": "^2.0.0",
+        "ultracite": "^5.0.46",
     };
-
+    
     if (features.db) {
         dependencies["mongodb"] = "^6.15.0";
     }
-
+    
     if (features.auth) {
         dependencies["better-auth"] = "^1.2.12";
     }
-
+    
     if (features.reactScan) {
-        dependencies["react-scan"] = "^0.3.4";
+        dependencies["react-scan"] = "^0.4.3";
     }
 
     const devDependencies: Record<string, string> = {
         "@types/react": "^18.3.1",
         "@types/react-dom": "^18.2.15",
         "@types/node": "^20.9.0",
+        tailwindcss: "4.1.11",
         typescript: "^5.2.2",
-        "@biomejs/biome": "^1.8.3",
+        "@tailwindcss/postcss": "^4.1.11",
+        "@biomejs/biome": "^2.0.6",
     };
 
     return {
@@ -349,7 +340,7 @@ function generatePackageJson(
         private: true,
         scripts: {
             dev: "next dev --turbopack",
-            build: "next build",
+            build: "next build --turbopack",
             start: "next start",
             lint: "biome lint .",
             format: "biome format --write .",
@@ -400,7 +391,7 @@ function generateTsConfig() {
 
 function generateEnvFile(projectName: string) {
     return `MONGODB_URI="mongodb://localhost:27017/${projectName}"
-BETTER_AUTH_SECRET=${randomUUID()}
+BETTER_AUTH_SECRET="${randomUUID()}"
 BETTER_AUTH_URL="http://localhost:3000"
 `;
 }
@@ -450,7 +441,7 @@ function generateReadme(
     let featuresSection = `
 ## Features
 
-- 🎨 **TailwindCSS** - Utility-first CSS framework
+- 🎨 **TailwindCSS v4** - Utility-first CSS framework
 - 🧩 **ShadCN UI** - Accessible and customizable component library
 - 🔍 **Biome** - Code linting and formatting
 - 🔄 **Git** - Version control with initial commit
@@ -516,15 +507,12 @@ function generateLayout(features: {
     auth: boolean;
     reactScan: boolean;
 }) {
-    const reactScanImport = features.reactScan
-        ? `// This component must be the top-most import in this file!
-import { ReactScan } from "@/components/ReactScan";`
-        : "";
 
-    const reactScanComponent = features.reactScan ? "<ReactScan />" : "";
+    const reactScanComponent = features.reactScan ? `<Head>
+                <script src="https://cdn.jsdelivr.net/npm/react-scan/dist/auto.global.js" />
+            </Head>` : "";
 
     return `import "@/styles/globals.css";
-${reactScanImport}
 import clsx from "clsx";
 import { Metadata, Viewport } from "next";
 
@@ -532,6 +520,7 @@ import { fontSans } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 
 import { Providers } from "./providers";
+import Head from "next/head";
 
 export const metadata: Metadata = {
     description: siteConfig.description,
@@ -559,7 +548,6 @@ export default function RootLayout({
     return (
         <html suppressHydrationWarning lang="en">
             ${reactScanComponent}
-            <head />
             <body
                 className={clsx(
                     "min-h-screen bg-background font-sans antialiased",
@@ -603,24 +591,7 @@ export const siteConfig = {
 };`;
 }
 
-// New function to generate ReactScan.tsx content
-function generateReactScanComponent() {
-    return `"use client";
-// react-scan must be imported before react
-import { scan } from "react-scan";
-import { JSX, useEffect } from "react";
 
-export function ReactScan(): JSX.Element {
-  useEffect(() => {
-    scan({
-      enabled: true,
-    });
-  }, []);
-
-  return <></>;
-}
-`;
-}
 
 function generateHomePage() {
     return `import { Button } from '@heroui/button';
@@ -654,11 +625,11 @@ export default function Home() {
 `;
 }
 
+
 function generateGlobalCss() {
-    return `@tailwind base;
-@tailwind components;
-@tailwind utilities;
- 
+    return `@import "tailwindcss";
+@config "../tailwind.config.js";
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -744,10 +715,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 function generateTailwindConfig() {
-    return `import { heroui } from "@heroui/theme";
-
+    return `
+import { heroui } from "@heroui/theme";
 /** @type {import('tailwindcss').Config} */
-const config = {
+export default {
     content: [
         "./components/**/*.{js,ts,jsx,tsx,mdx}",
         "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -775,16 +746,13 @@ const config = {
     darkMode: "class",
     plugins: [heroui(), require("tailwindcss-animate")],
 };
-
-export default config;
 `;
 }
 
 function generatePostcssConfig() {
     return `export default {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
+  "@tailwindcss/postcss": {}
   },
 }`;
 }
@@ -793,7 +761,7 @@ function generatePostcssConfig() {
 
 function generateBiomeConfig() {
     return `{
-  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
   "extends": ["ultracite"],
   "linter": {
     "enabled": true,
