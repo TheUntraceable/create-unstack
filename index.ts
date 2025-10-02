@@ -295,14 +295,14 @@ function generatePackageJson(
     features: { db: boolean; auth: boolean; reactScan: boolean }, // Replaced million with reactScan
 ) {
     const dependencies: Record<string, string> = {
-        next: "^15.4.0",
+        next: "^15.5.4",
         react: "18.3.1",
         "tailwindcss-animate": "^1.0.7",
         "react-dom": "18.3.1",
-        "@heroui/system": "2.4.19",
-        "@heroui/theme": "2.4.19",
-        "@heroui/toast": "^2.0.13",
-        "@heroui/button": "2.2.23",
+        "@heroui/system": "2.4.22",
+        "@heroui/theme": "2.4.22",
+        "@heroui/toast": "^2.0.16",
+        "@heroui/button": "2.2.26",
         "next-themes": "^0.4.6",
         "class-variance-authority": "^0.7.1",
         clsx: "^2.1.1",
@@ -316,13 +316,9 @@ function generatePackageJson(
     }
     
     if (features.auth) {
-        dependencies["better-auth"] = "^1.2.12";
+        dependencies["better-auth"] = "^1.3.9";
     }
     
-    if (features.reactScan) {
-        dependencies["react-scan"] = "^0.4.3";
-    }
-
     const devDependencies: Record<string, string> = {
         "@types/react": "^18.3.1",
         "@types/react-dom": "^18.2.15",
@@ -330,7 +326,7 @@ function generatePackageJson(
         tailwindcss: "4.1.11",
         typescript: "^5.2.2",
         "@tailwindcss/postcss": "^4.1.11",
-        "@biomejs/biome": "^2.0.6",
+        "@biomejs/biome": "^2.2.5",
     };
 
     return {
