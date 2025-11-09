@@ -299,10 +299,10 @@ function generatePackageJson(
         react: "18.3.1",
         "tailwindcss-animate": "^1.0.7",
         "react-dom": "18.3.1",
-        "@heroui/system": "2.4.22",
-        "@heroui/theme": "2.4.22",
-        "@heroui/toast": "^2.0.16",
-        "@heroui/button": "2.2.26",
+        "@heroui/system": "^2.4.23",
+        "@heroui/theme": "^2.4.23",
+        "@heroui/toast": "^2.0.17",
+        "@heroui/button": "^2.2.27",
         "next-themes": "^0.4.6",
         "class-variance-authority": "^0.7.1",
         clsx: "^2.1.1",
@@ -316,7 +316,7 @@ function generatePackageJson(
     }
     
     if (features.auth) {
-        dependencies["better-auth"] = "^1.3.9";
+        dependencies["better-auth"] = "^1.3.34";
     }
     
     const devDependencies: Record<string, string> = {
@@ -324,7 +324,7 @@ function generatePackageJson(
         "@types/react-dom": "^18.2.15",
         "@types/node": "^20.9.0",
         tailwindcss: "4.1.11",
-        typescript: "^5.2.2",
+        typescript: "^5.9.3",
         "@tailwindcss/postcss": "^4.1.11",
         "@biomejs/biome": "^2.2.5",
     };
