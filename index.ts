@@ -295,10 +295,10 @@ function generatePackageJson(
     features: { db: boolean; auth: boolean; reactScan: boolean }, // Replaced million with reactScan
 ) {
     const dependencies: Record<string, string> = {
-        next: "^16.0.6",
-        react: "19.2.0",
+        next: "^16.0.7",
+        react: "^19.2.1",
         "tailwindcss-animate": "^1.0.7",
-        "react-dom": "19.2.0",
+        "react-dom": "^19.2.1",
         "@heroui/system": "^2.4.23",
         "@heroui/theme": "^2.4.23",
         "@heroui/toast": "^2.0.17",
@@ -320,8 +320,8 @@ function generatePackageJson(
     }
     
     const devDependencies: Record<string, string> = {
-        "@types/react": "^19.2.0",
-        "@types/react-dom": "^19.2.0",
+        "@types/react": "^19.2.1",
+        "@types/react-dom": "^19.2.1",
         "@types/node": "^20.9.0",
         tailwindcss: "4.1.11",
         typescript: "^5.9.3",
